@@ -48,7 +48,7 @@ var DUMMY_PLACES = [
 const createPlace = (req, res, next) => {
   validateResult(req);
 
-  const { title, description, coordinates, address, creator } = req.body;
+  const { title, description, address, creator } = req.body;
 
   const coordinates = getCoordsForAddress(address);
 

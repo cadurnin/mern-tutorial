@@ -1,5 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
+const mongoose = require("mongoose");
+const config = require("../config");
 
 const placesRoutes = require("./routes/places-routes");
 const userRoutes = require("./routes/users-routes");
@@ -25,4 +27,11 @@ app.use((error, req, res, next) => {
   res.json({ message: error.message || "An unknown error occurred" });
 });
 
-app.listen(5000);
+mongoose
+  .connect(config.mongodb)
+  .then(() => {
+    app.listen(5000);
+  })
+  .catch((err) => {
+    console.log(err);
+  });
