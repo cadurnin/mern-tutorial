@@ -1,8 +1,10 @@
 const { v4: uuidv4 } = require("uuid");
-const HttpError = require("../models/http-error");
 const { validationResult } = require("express-validator");
 const { validateResult } = require("./shared");
+
+const HttpError = require("../models/http-error");
 const getCoordsForAddress = require("../util/location");
+const Place = require("../models/place");
 
 const getPlaceById = (req, res, next) => {
   const placeId = req.params.pid;
@@ -45,23 +47,28 @@ var DUMMY_PLACES = [
   },
 ];
 
-const createPlace = (req, res, next) => {
+const createPlace = async (req, res, next) => {
   validateResult(req);
 
   const { title, description, address, creator } = req.body;
 
   const coordinates = getCoordsForAddress(address);
 
-  const createdPlace = {
-    id: uuidv4(),
-    title: title,
+  const createdPlace = Place({
+    title,
     description,
-    location: coordinates,
     address,
+    location: coordinates,
+    image:
+      "https://upload.wikimedia.org/wikipedia/commons/b/b6/Caspar_David_Friedrich_044.jpg",
     creator,
-  };
-
-  DUMMY_PLACES.push(createdPlace);
+  });
+  try {
+    await createdPlace.save();
+  } catch (err) {
+    const error = new HttpError("Creating place failed", 500);
+    return next(error);
+  }
 
   res.status(201).json({ place: createdPlace });
 };
