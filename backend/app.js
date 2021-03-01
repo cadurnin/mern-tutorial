@@ -33,5 +33,6 @@ mongoose
     app.listen(5000);
   })
   .catch((err) => {
+    console.log("Something went wrong connecting to MongoDB");
     console.log(err);
   });
