@@ -66,8 +66,6 @@ const userLogin = async (req, res, next) => {
 
   const { email, password } = req.body;
 
-  console.log(email);
-
   let existingUser;
   try {
     existingUser = await User.findOne({ email: email });
