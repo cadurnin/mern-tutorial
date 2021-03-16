@@ -6,13 +6,14 @@ const HttpError = require("../models/http-error");
 const router = express.Router();
 
 const placesController = require("../controllers/places-controller");
-
+const fileUpload = require("../middleware/file-upload");
 router.get("/:pid", placesController.getPlaceById);
 
 router.get("/user/:uid", placesController.getPlacesByUserId);
 
 router.post(
   "/",
+  fileUpload.single("image"),
   [
     check("title").not().isEmpty(),
     check("description").isLength({ min: 5 }),
@@ -21,12 +22,11 @@ router.post(
   placesController.createPlace
 );
 
-router.patch("/:pid", 
-[
-  check('title').not().isEmpty(),
-  check("description").isLength({ min: 5 })
-]
-,placesController.updatePlace);
+router.patch(
+  "/:pid",
+  [check("title").not().isEmpty(), check("description").isLength({ min: 5 })],
+  placesController.updatePlace
+);
 
 router.delete("/:pid", placesController.deletePlace);
 
