@@ -1,7 +1,7 @@
 const express = require("express");
 const HttpError = require("../models/http-error");
 const { check } = require("express-validator");
-
+const fileUpload = require("../middleware/file-upload");
 const userController = require("../controllers/users-controller");
 
 const router = express.Router();
@@ -10,6 +10,7 @@ router.get("/", userController.getUsers);
 
 router.post(
   "/signup",
+  fileUpload.single("image"),
   [
     check("name").not().isEmpty(),
     check("password").isLength({ min: 8 }),
