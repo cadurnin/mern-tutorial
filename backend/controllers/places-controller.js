@@ -63,6 +63,8 @@ const createPlace = async (req, res, next) => {
 
   const { title, description, address, creator } = req.body;
 
+  console.log(req);
+
   const coordinates = getCoordsForAddress(address);
 
   const createdPlace = Place({
@@ -79,6 +81,7 @@ const createPlace = async (req, res, next) => {
   try {
     user = await User.findById(creator);
   } catch (err) {
+    console.log(err);
     const error = new HttpError(
       "Creating place, failed, please try again",
       500
