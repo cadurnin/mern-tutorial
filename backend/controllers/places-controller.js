@@ -61,7 +61,7 @@ const getPlacesByUserId = async (req, res, next) => {
 const createPlace = async (req, res, next) => {
   validateResult(req);
 
-  const { title, description, address, creator } = req.body;
+  const { title, description, address } = req.body;
 
   console.log(req);
 
@@ -73,13 +73,13 @@ const createPlace = async (req, res, next) => {
     address,
     location: coordinates,
     image: req.file.path,
-    creator,
+    creator: req.userData.userId,
   });
 
   let user;
 
   try {
-    user = await User.findById(creator);
+    user = await User.findById(req.userData.userId);
   } catch (err) {
     console.log(err);
     const error = new HttpError(
@@ -127,11 +127,8 @@ const updatePlace = async (req, res, next) => {
     return next(error);
   }
 
-  if(place.creator.toString() !== req.userData.userId) {
-    const error = new HttpError(
-      "You are not allowed to edit this place",
-      401
-    );
+  if (place.creator.toString() !== req.userData.userId) {
+    const error = new HttpError("You are not allowed to edit this place", 401);
     return next(error);
   }
 
@@ -170,7 +167,7 @@ const deletePlace = async (req, res, next) => {
     return next(error);
   }
 
-  if(place.creator.id !== req.userData.userId) {
+  if (place.creator.id !== req.userData.userId) {
     const error = new HttpError(
       "You are not allowed to delete this place",
       403
