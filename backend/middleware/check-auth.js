@@ -12,7 +12,7 @@ module.exports = (req, res, next) => {
       console.log("Could not find token");
       throw new Error("Authentication failed");
     }
-    const decodedToken = jwt.verify(token, config["secret"]);
+    const decodedToken = jwt.verify(token, process.env);
     req.userData = { userId: decodedToken.userId };
     next();
   } catch (err) {
